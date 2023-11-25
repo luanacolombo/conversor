@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http; //permite que façamos as requisições
@@ -40,8 +38,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final realController = TextEditingController(); //obter os textos
+  final dolarController = TextEditingController(); //obter os textos
+  final euroController = TextEditingController(); //obter os textos
+
   double? dolar;
   double? euro;
+
+  void realChanged(String text) {
+    //é chamada quando mudamos o valor do real
+  }
+
+  void dolarChanged(String text) {
+    //é chamada quando mudamos o valor do dolar
+  }
+
+  void euroChanged(String text) {
+    //é chamada quando mudamos o valor do euro
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,42 +98,21 @@ class _HomeState extends State<Home> {
                         snapshot.data?["results"]["currencies"]["USD"]["buy"];
                     euro =
                         snapshot.data?["results"]["currencies"]["EUR"]["buy"];
-                    return const SingleChildScrollView(
-                      padding: EdgeInsets.all(10.0),
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Icon(Icons.monetization_on,
+                          const Icon(Icons.monetization_on,
                               size: 150.0, color: Colors.amber),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: "Reais",
-                                labelStyle: TextStyle(color: Colors.amber),
-                                border: OutlineInputBorder(),
-                                prefixText: "R\$"),
-                            style:
-                                TextStyle(color: Colors.amber, fontSize: 25.0),
-                          ),
-                          Divider(),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: "Dólares",
-                                labelStyle: TextStyle(color: Colors.amber),
-                                border: OutlineInputBorder(),
-                                prefixText: "US\$"),
-                            style:
-                                TextStyle(color: Colors.amber, fontSize: 25.0),
-                          ),
-                          Divider(),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: "Euros",
-                                labelStyle: TextStyle(color: Colors.amber),
-                                border: OutlineInputBorder(),
-                                prefixText: "€"),
-                            style:
-                                TextStyle(color: Colors.amber, fontSize: 25.0),
-                          ),
+                          buildTextField(
+                              "Reais", "R\$", realController, realChanged),
+                          const Divider(),
+                          buildTextField(
+                              "Dólares", "US\$", dolarController, dolarChanged),
+                          const Divider(),
+                          buildTextField(
+                              "Euros", "€", euroController, euroChanged),
                         ],
                       ),
                     );
@@ -127,4 +120,19 @@ class _HomeState extends State<Home> {
               }
             }));
   }
+}
+
+Widget buildTextField(
+    String label, String prefix, TextEditingController c, Function f) {
+  return TextField(
+    controller: c,
+    decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.amber),
+        border: const OutlineInputBorder(),
+        prefixText: prefix),
+    style: const TextStyle(color: Colors.amber, fontSize: 25.0),
+    onChanged: (e) => f,
+    keyboardType: TextInputType.number,
+  );
 }
